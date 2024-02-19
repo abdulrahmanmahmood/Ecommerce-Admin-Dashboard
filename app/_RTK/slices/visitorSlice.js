@@ -1,9 +1,11 @@
-'use client'
+"use client";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { apiUrl } from "@/app/_utilize/axiosClient";
 
-const initialToken = localStorage.getItem('token');
+if (typeof window !== "undefined") {
+  const initialToken = localStorage.getItem("token");
+}
 
 export const fetchVisitor = createAsyncThunk(
   "visitor/fetchVisitor",
@@ -36,11 +38,11 @@ const visitorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchVisitor.fulfilled, (state, action) => {
-      return state = action.payload;
+      return (state = action.payload);
     });
   },
 });
 
-export const {increment,decrement} = visitorSlice.actions;
+export const { increment, decrement } = visitorSlice.actions;
 
 export default visitorSlice.reducer;
