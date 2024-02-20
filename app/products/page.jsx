@@ -9,7 +9,7 @@ import Products from "../_components/Products";
 const page = () => {
   const token = useSelector((state) => state.token);
   const [allProducts, setAllProducts] = useState([]);
-  const localToken = localStorage.getItem("localToken");
+  const localToken = typeof window !== 'undefined' ? localStorage.getItem("localToken") : null;
   const [allCategories,setAllCategories]=useState([])
 
   const [productItemData, setProductItemData] = useState({

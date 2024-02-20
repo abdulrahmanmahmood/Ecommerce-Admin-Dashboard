@@ -9,7 +9,7 @@ import { apiUrl } from "../_utilize/axiosClient";
 
 const page = () => {
   const token = useSelector((state) => state.token);
-  const localToken = localStorage.getItem("localToken");
+  const localToken = typeof window !== 'undefined' ? localStorage.getItem("localToken") : null;
   const [shippedOrders, setShippedOrders] = useState([]);
   useEffect(() => {
     getShippedOrders();

@@ -12,7 +12,7 @@ const Products = ({ allProducts, getAllProducts }) => {
   const [showInputForProductId, setShowInputForProductId] = useState("");
   const [showFormForUpdateProduc, setShowFormForUpdateProduc] = useState("");
   const [closeInput, setCloseInput] = useState(false);
-  const localToken = localStorage.getItem("localToken");
+  const localToken = typeof window !== 'undefined' ? localStorage.getItem("localToken") : null;
   const [selectedFile, setSelectedFile] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [productItemData, setProductItemData] = useState({
