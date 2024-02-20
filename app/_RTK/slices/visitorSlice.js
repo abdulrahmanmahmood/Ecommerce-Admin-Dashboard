@@ -1,11 +1,10 @@
-"use client";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { apiUrl } from "@/app/_utilize/axiosClient";
 
-if (typeof window !== "undefined") {
-  const initialToken = localStorage.getItem("token");
-}
+// Check if localStorage is defined before accessing it
+const initialToken =
+  typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
 export const fetchVisitor = createAsyncThunk(
   "visitor/fetchVisitor",

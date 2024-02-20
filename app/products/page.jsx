@@ -9,8 +9,8 @@ import Products from "../_components/Products";
 const page = () => {
   const token = useSelector((state) => state.token);
   const [allProducts, setAllProducts] = useState([]);
-
-  const [allCategories, setAllCategories] = useState([]);
+  const localToken = localStorage.getItem("localToken");
+  const [allCategories,setAllCategories]=useState([])
 
   const [productItemData, setProductItemData] = useState({
     name: "",
@@ -27,10 +27,6 @@ const page = () => {
   useEffect(() => {
     getAllProducts();
   }, []);
-
-  if (typeof window !== "undefined") {
-    const localToken = localStorage.getItem("localToken");
-  }
 
   useEffect(() => {
     // Check if all fields are filled whenever productItemData changes
@@ -103,7 +99,9 @@ const page = () => {
       });
   };
 
-  const getAllCategories = () => {};
+  const getAllCategories = ()=>{
+
+  }
 
   return (
     <div className="items-center">

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import axios from "axios";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ const Products = ({ allProducts, getAllProducts }) => {
   const [showInputForProductId, setShowInputForProductId] = useState("");
   const [showFormForUpdateProduc, setShowFormForUpdateProduc] = useState("");
   const [closeInput, setCloseInput] = useState(false);
+  const localToken = localStorage.getItem("localToken");
   const [selectedFile, setSelectedFile] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [productItemData, setProductItemData] = useState({
@@ -24,9 +25,6 @@ const Products = ({ allProducts, getAllProducts }) => {
     // pictureUrl: "",
     afterDiscount: "",
   });
-  if (typeof window !== "undefined") {
-    const localToken = localStorage.getItem("localToken");
-  }
 
   const handleDeleteImage = (productId, imageIndex) => {
     axios

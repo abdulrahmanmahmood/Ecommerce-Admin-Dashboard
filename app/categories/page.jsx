@@ -189,7 +189,7 @@ const page = () => {
 
       {/* Sub Categories table */}
       <div className="w-[80%] items-center text-center mx-auto mt-15">
-        <h2 className="mt-10">Categories</h2>
+        <h2 className="mt-10"> Categories</h2>
       <Categories subCategory={subCategory} />
       </div>
     </div>
