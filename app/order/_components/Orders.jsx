@@ -5,7 +5,7 @@ import axios from "axios";
 import { apiUrl } from "@/app/_utilize/axiosClient";
 import { useSelector } from "react-redux";
 
-const Orders = ({ orders }) => {
+const Orders = ({ orders, getAllOrders }) => {
   const token = useSelector((state) => state.token);
   const localToken =
     typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
@@ -28,6 +28,7 @@ const Orders = ({ orders }) => {
         })
         .then((res) => {
           console.log("successfully move the order to shipped", res);
+          getAllOrders();
         })
         .catch((error) => {
           console.log("error in moving order to shipped ", error);
@@ -48,6 +49,7 @@ const Orders = ({ orders }) => {
         })
         .then((res) => {
           console.log("successfully move the order to Delivery", res);
+          getAllOrders();
         })
         .catch((error) => {
           console.log("error in moving order to Delivery ", error);
@@ -66,6 +68,7 @@ const Orders = ({ orders }) => {
       })
       .then((res) => {
         console.log("success to set out for delivery", res);
+        getAllOrders();
       })
       .catch((error) => {
         console.log("error in sending order to out for delivery ", error);
@@ -116,15 +119,15 @@ const Orders = ({ orders }) => {
             </div>
           </div>
           {order.orderStatus === "PREPARED" ? (
-            <button className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white">
+            <button className="absolute top-2 right-2 items-end bg-[#00CED1] p-2 rounded-xl ml-auto text-white ">
               Move to Shipped
             </button>
           ) : order.orderStatus === "SHIPPED" ? (
-            <button className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white">
+            <button className="absolute top-2 right-2 items-end bg-[#32CD32] p-2 rounded-xl ml-auto text-white ">
               Move to Delivery
             </button>
           ) : (
-            <button className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white">
+            <button className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white ">
               Out for Delivery
             </button>
           )}

@@ -19,6 +19,11 @@ const page = () => {
     getPreparedOrders();
     getDeliveredOrders();
   }, []);
+  const getAllOrders = ()=>{
+    getShippedOrders();
+    getPreparedOrders();
+    getDeliveredOrders();
+  }
 
   const getShippedOrders = () => {
     axios
@@ -83,9 +88,9 @@ const page = () => {
       <div className="w-full mx-auto lg:w-[90%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {/* Prepared Orders */}
         <div>
-          <h2 className="text-2xl text-center m-3">Prepared Orders</h2>
+          <h2 className="text-2xl text-center m-5 bg-[#FFD700] border-2 shadow-md rounded-2xl p-4 ">Prepared Orders</h2>
           {preparedOrders.length > 0 ? (
-            <Orders orders={preparedOrders} />
+            <Orders orders={preparedOrders} getAllOrder={getAllOrders}/>
           ) : (
             <h2 className="text-center">There are no prepared orders yet</h2>
           )}
@@ -93,9 +98,9 @@ const page = () => {
 
         {/* Shipped Orders */}
         <div>
-          <h2 className="text-2xl text-center m-3">Shipped Orders</h2>
+          <h2 className="text-2xl text-center m-5 bg-[#00CED1] border-2 shadow-md rounded-2xl p-4 ">Shipped Orders</h2>
           {shippedOrders.length > 0 ? (
-            <Orders orders={shippedOrders} />
+            <Orders orders={shippedOrders} getAllOrder={getAllOrders}/>
           ) : (
             <h2 className="text-center">There are no shipped orders yet</h2>
           )}
@@ -103,9 +108,9 @@ const page = () => {
 
         {/* Delivered Orders */}
         <div>
-          <h2 className="text-2xl text-center m-3">Delivered Orders</h2>
+          <h2 className="text-2xl text-center m-5 bg-[#32CD32] border-2 shadow-md rounded-2xl p-4 ">Delivered Orders</h2>
           {deliveredOrders.length > 0 ? (
-            <Orders orders={deliveredOrders} />
+            <Orders orders={deliveredOrders} getAllOrder={getAllOrders}/>
           ) : (
             <h2 className="text-center">There are no delivered orders yet</h2>
           )}
