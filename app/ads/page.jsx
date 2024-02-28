@@ -26,8 +26,8 @@ const Page = () => {
       title: title,
       description: description,
       targetUrl: targetUrl,
-      startDate: `${startDate}T:22:11:00`,
-      endDate: `${endDate}T:22:11:00`,
+      startDate: `${startDate}T11:11:00`,
+      endDate: `${endDate}T11:11:00`,
     };
     console.log("data to send ", data);
 
