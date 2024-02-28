@@ -1,7 +1,40 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Header from "../_components/Header";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { apiUrl } from "../_utilize/axiosClient";
 
 const page = () => {
+  const token = useSelector((state) => state.token);
+  const localToken =
+    typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
+
+  typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
+  const [message, setMessage] = useState("");
+  const sendNotification = (e) => {
+    e.preventDefault();
+    console.log(message);
+
+    axios
+      .post(`${apiUrl}/admin/notify/all`, {"message":message}, {
+        headers: {
+          Authorization: `Bearer ${localToken ? localToken : token}`,
+          "Accept-Language": "en",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        alert(res.data);
+        setMessage("");
+      })
+      .catch((error) => {
+        console.log("error in senddding glopal notifi", error);
+      });
+  };
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+  };
   return (
     <div>
       <Header />
@@ -10,15 +43,15 @@ const page = () => {
           NOTIFY ALL CUSTOMERS
         </h3>
         <div className="w-[90%] mx-auto mt-8">
-          <form action="#" className="space-y-4">
+          <form action="#" className="space-y-4" onSubmit={sendNotification}>
             <div>
               <textarea
                 className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
                 placeholder="Enter the message "
                 rows="8"
                 id="description"
-                // value={productItemData.description}
-                // onChange={handleChange}
+                value={message}
+                onChange={handleChange}
               ></textarea>
             </div>
 

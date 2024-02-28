@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import axios from "axios";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -6,13 +6,15 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { apiUrl } from "../_utilize/axiosClient";
 import { useSelector } from "react-redux";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import ProductDescription from "./ProductDescription";
 
-const Products = ({ allProducts, getAllProducts }) => {
+const Products = ({ allProducts, getAllProducts, Categories }) => {
   const token = useSelector((state) => state.token);
   const [showInputForProductId, setShowInputForProductId] = useState("");
   const [showFormForUpdateProduc, setShowFormForUpdateProduc] = useState("");
   const [closeInput, setCloseInput] = useState(false);
-  const localToken = typeof window !== 'undefined' ? localStorage.getItem("localToken") : null;
+  const localToken =
+    typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
   const [selectedFile, setSelectedFile] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [productItemData, setProductItemData] = useState({
@@ -76,7 +78,7 @@ const Products = ({ allProducts, getAllProducts }) => {
       formData.append("image", selectedFile);
       axios
         .put(
-          `http://195.35.28.106:8080/api/v1/custom/product/picture/add/${productId}`,
+          `${apiUrl}/custom/product/picture/add/${productId}`,
           formData,
           {
             headers: {
@@ -151,7 +153,13 @@ const Products = ({ allProducts, getAllProducts }) => {
       }
     }
   };
-
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+    setProductItemData((prevData) => ({
+      ...prevData,
+      categoryId: value,
+    }));
+  };
   return (
     <>
       {allProducts.map((product) => (
@@ -169,8 +177,8 @@ const Products = ({ allProducts, getAllProducts }) => {
                 <div className="relative h-full w-full">
                   <Image
                     src={url}
-                    layout="fill"
-                    objectFit="cover"
+                    width={150}
+                    height={140}
                     alt={`product image ${index + 1}`}
                     className="rounded outline-dashed"
                   />
@@ -210,9 +218,7 @@ const Products = ({ allProducts, getAllProducts }) => {
               </p>
             </div>
             <div className="m-3">
-              <p className="w-full text-lg m-2">
-                Description: {product.description}
-              </p>
+            <ProductDescription editedDescription={product.description} />
               <p className="w-full text-lg m-2">About {product.about}</p>
             </div>
 
@@ -324,14 +330,22 @@ const Products = ({ allProducts, getAllProducts }) => {
                     />
                   </div>
                   <div>
-                    <input
-                      className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2  text-sm"
-                      placeholder="Category Id "
-                      type="number"
-                      id="categoryId"
+                    <select
+                      name="mainCategoryId"
+                      id="mainCategoryId"
                       value={productItemData.categoryId}
-                      onChange={handleChange}
-                    />
+                      className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
+                      placeholder="select the main categories"
+                      onChange={handleSelectChange}
+                    >
+                      <option> select main category</option>
+
+                      {Categories?.map((item) => (
+                        <option value={item.categoryId} key={item.categoryId}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 

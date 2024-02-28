@@ -24,7 +24,7 @@ const Header = () => {
         </select>
       </div>
 
-      <div className="hidden sm:block mt-1   items-center mx-auto text-center w-[50%] pt-2  ">
+      <div className="hidden sm:block mt-1   items-center mx-auto text-center  pt-2  ">
         <div className="border-b border-gray-200 mx-auto text-center items-center ">
           <nav className="flex gap-6" aria-label="Tabs">
             <Link

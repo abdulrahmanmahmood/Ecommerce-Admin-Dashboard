@@ -5,12 +5,15 @@ import axios from "axios";
 import { apiUrl } from "../_utilize/axiosClient";
 import { useSelector } from "react-redux";
 import Products from "../_components/Products";
+import { Editor } from "@tinymce/tinymce-react";
 
 const page = () => {
   const token = useSelector((state) => state.token);
   const [allProducts, setAllProducts] = useState([]);
-  const localToken = typeof window !== 'undefined' ? localStorage.getItem("localToken") : null;
-  const [allCategories,setAllCategories]=useState([])
+  const localToken =
+    typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
+  const [allCategories, setAllCategories] = useState([]);
+  const [Categories, setCategories] = useState([]);
 
   const [productItemData, setProductItemData] = useState({
     name: "",
@@ -26,6 +29,7 @@ const page = () => {
 
   useEffect(() => {
     getAllProducts();
+    fetchSubCategory();
   }, []);
 
   useEffect(() => {
@@ -33,6 +37,22 @@ const page = () => {
     const filled = Object.values(productItemData).every((val) => val !== "");
     setAllFieldsFilled(filled);
   }, [productItemData]);
+  const fetchSubCategory = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/public/category/all`, {
+        headers: {
+          "Accept-Language": "en",
+        },
+      });
+      console.log(
+        "success in fetching Sub Categoryies ",
+        response.data.data.categories
+      );
+      setCategories(response.data.data.categories);
+    } catch (error) {
+      console.log("error in fetching Sub Category", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -67,9 +87,10 @@ const page = () => {
             // pictureUrl: "",
             afterDiscount: "",
           });
+          getAllProducts();
         });
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.log("Error uploading image:", error);
       if (error.response) {
         // The request was made and the server responded with a status code
         console.log("Server response:", error.response.data);
@@ -99,9 +120,14 @@ const page = () => {
       });
   };
 
-  const getAllCategories = ()=>{
-
-  }
+  const getAllCategories = () => {};
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+    setProductItemData((prevData) => ({
+      ...prevData,
+      categoryId: value,
+    }));
+  };
 
   return (
     <div className="items-center">
@@ -159,14 +185,22 @@ const page = () => {
                 />
               </div>
               <div>
-                <input
-                  className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
-                  placeholder="Category Id "
-                  type="number"
-                  id="categoryId"
+                <select
+                  name="mainCategoryId"
+                  id="mainCategoryId"
                   value={productItemData.categoryId}
-                  onChange={handleChange}
-                />
+                  className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
+                  placeholder="select the main categories"
+                  onChange={handleSelectChange}
+                >
+                  <option> select main category</option>
+
+                  {Categories?.map((item) => (
+                    <option value={item.categoryId} key={item.categoryId}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -193,14 +227,31 @@ const page = () => {
             </div> */}
 
             <div>
-              <textarea
-                className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
-                placeholder="Description"
-                rows="8"
-                id="description"
+              <Editor
+                apiKey="i27yyskvsd8log2qv8p7qd6rzwjidv0v1o5ptk0ub65kt8fn"
                 value={productItemData.description}
-                onChange={handleChange}
-              ></textarea>
+                onEditorChange={(content) =>
+                  setProductItemData({
+                    ...productItemData,
+                    description: content,
+                  })
+                }
+                init={{
+                  height: 500,
+                  menubar:
+                    "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss",
+                  plugins: [
+                    "advlist autolink lists link image",
+                    "charmap print preview anchor help",
+                    "searchreplace visualblocks code",
+                    "insertdatetime media table paste wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | formatselect | bold italic | \
+                alignleft aligncenter alignright | \
+                bullist numlist outdent indent | help",
+                }}
+              />
             </div>
 
             <div className="mt-4">
@@ -227,7 +278,11 @@ const page = () => {
       </div>
 
       <div className="w-[90%] mt-10 text-center items-center mx-auto ">
-        <Products allProducts={allProducts} getAllProducts={getAllProducts} />
+        <Products
+          allProducts={allProducts}
+          getAllProducts={getAllProducts}
+          Categories={Categories}
+        />
       </div>
     </div>
   );

@@ -4,10 +4,26 @@ import Header from "../_components/Header";
 import axios from "axios";
 import MainCategories from "../_components/MainCategories";
 import Categories from "../_components/Categories";
+import { apiUrl } from "../_utilize/axiosClient";
+import { useSelector } from "react-redux";
 
 const page = () => {
   const [mainCategory, setMainCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
+  const [mainCategorydata, setMainCategorydata] = useState({
+    name: "",
+    description: "",
+  });
+  const [subCategoryData, setSubCategoryData] = useState({
+    name: "",
+    description: "",
+    mainCategoryId: "",
+  });
+  const token = useSelector((state) => state.token);
+  const localToken =
+    typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
+
+  typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
   useEffect(() => {
     fetchMianCategory();
     fetchSubCategory();
@@ -15,14 +31,11 @@ const page = () => {
 
   const fetchMianCategory = async () => {
     try {
-      const response = await axios.get(
-        "http://195.35.28.106:8080/api/v1/public/main/category/all",
-        {
-          headers: {
-            "Accept-Language": "en",
-          },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/public/main/category/all`, {
+        headers: {
+          "Accept-Language": "en",
+        },
+      });
       console.log("success in fetching main Categoryies ", response.data.data);
       setMainCategory(response.data.data.mainCategories);
     } catch (error) {
@@ -32,14 +45,11 @@ const page = () => {
 
   const fetchSubCategory = async () => {
     try {
-      const response = await axios.get(
-        "http://195.35.28.106:8080/api/v1/public/category/all",
-        {
-          headers: {
-            "Accept-Language": "en",
-          },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/public/category/all`, {
+        headers: {
+          "Accept-Language": "en",
+        },
+      });
       console.log(
         "success in fetching Sub Categoryies ",
         response.data.data.categories
@@ -48,6 +58,73 @@ const page = () => {
     } catch (error) {
       console.log("error in fetching Sub Category", error);
     }
+  };
+  const addMainCategory = (e) => {
+    e.preventDefault();
+
+    axios
+      .post(`${apiUrl}/admin/main/category/new`, mainCategorydata, {
+        headers: {
+          Authorization: `Bearer ${localToken ? localToken : token}`,
+          "Accept-Language": "en",
+        },
+      })
+      .then((res) => {
+        console.log("succeffully adding main Category ", res);
+        setMainCategorydata({
+          name: "",
+          description: "",
+        });
+        fetchMianCategory();
+      })
+      .catch((error) => {
+        console.log("error in adding main products", error);
+      });
+  };
+  const addSubCategory = (e) => {
+    e.preventDefault();
+    axios
+      .post(`${apiUrl}/admin/category/new`, subCategoryData, {
+        headers: {
+          Authorization: `Bearer ${localToken ? localToken : token}`,
+          "Accept-Language": "en",
+        },
+      })
+      .then((res) => {
+        console.log("succeffully adding sub Category ", res);
+        setSubCategoryData({
+          name: "",
+          description: "",
+          mainCategoryId: "",
+        });
+        fetchSubCategory();
+      })
+      .catch((error) => {
+        console.log("error in adding sub products", error);
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setMainCategorydata((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+  const handleSubInputChange = (e) => {
+    const { id, value } = e.target;
+    setSubCategoryData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+    setSubCategoryData((prevData) => ({
+      ...prevData,
+      mainCategoryId: value,
+    }));
   };
 
   return (
@@ -59,15 +136,20 @@ const page = () => {
           ADD MAIN CATEGORY
         </h3>
         <div className="w-[90%] mx-auto mt-8">
-          <form action="#" className="space-y-4">
+          <form
+            action="#"
+            className="space-y-4"
+            onSubmit={addMainCategory}
+            form="mainCategoryForm"
+          >
             <div>
               <input
                 className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
                 placeholder="Main Category Name"
                 type="text"
                 id="name"
-                // value={productItemData.name}
-                // onChange={handleChange}
+                value={mainCategorydata.name}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -77,8 +159,8 @@ const page = () => {
                 placeholder="Description"
                 rows="8"
                 id="description"
-                // value={productItemData.description}
-                // onChange={handleChange}
+                value={mainCategorydata.description}
+                onChange={handleInputChange}
               ></textarea>
             </div>
 
@@ -117,26 +199,39 @@ const page = () => {
           ADD SUB CATEGORY
         </h3>
         <div className="w-[90%] mx-auto mt-8">
-          <form action="#" className="space-y-4">
+          <form
+            action="#"
+            className="space-y-4"
+            form="subCategoryForm"
+            onSubmit={addSubCategory}
+          >
             <div>
               <input
                 className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
                 placeholder="Category Name"
                 type="text"
                 id="name"
-                // value={productItemData.name}
-                // onChange={handleChange}
+                value={subCategoryData.name}
+                onChange={handleSubInputChange}
               />
             </div>
             <div>
-              <input
+              <select
+                name="mainCategoryId"
+                id="mainCategoryId"
+                value={subCategoryData.mainCategoryId}
                 className="w-full rounded-lg border-gray-200 py-5 mt-2 lg:p-3 px-2 text-sm"
-                placeholder="Main Category Id"
-                type="text"
-                id="name"
-                // value={productItemData.name}
-                // onChange={handleChange}
-              />
+                placeholder="select the main categories"
+                onChange={handleSelectChange}
+              >
+                <option> select main category</option>
+
+                {mainCategory?.map((item) => (
+                  <option value={item.categoryId} key={item.categoryId}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -145,8 +240,8 @@ const page = () => {
                 placeholder="Description"
                 rows="8"
                 id="description"
-                // value={productItemData.description}
-                // onChange={handleChange}
+                value={subCategoryData.description}
+                onChange={handleSubInputChange}
               ></textarea>
             </div>
 
@@ -181,16 +276,16 @@ const page = () => {
       </div>
 
       {/* Main Categories table */}
-      <div className="w-[80%] items-center text-center mx-auto mt-15">
+      <div className="w-[95%] items-center text-center mx-auto mt-15">
         <h2 className="mt-10">Main Categories</h2>
 
-        <MainCategories mainCategory={mainCategory} />
+        <MainCategories mainCategory={mainCategory} fetchMianCategory={fetchMianCategory}/>
       </div>
 
       {/* Sub Categories table */}
-      <div className="w-[80%] items-center text-center mx-auto mt-15">
+      <div className="w-[95%] items-center text-center mx-auto mt-15">
         <h2 className="mt-10"> Categories</h2>
-      <Categories subCategory={subCategory} />
+        <Categories subCategory={subCategory} fetchSubCategory={fetchSubCategory}/>
       </div>
     </div>
   );

@@ -11,13 +11,13 @@ const Orders = ({ orders, getAllOrders }) => {
     typeof window !== "undefined" ? localStorage.getItem("localToken") : null;
 
   const dataToShipped = {
-    value: "",
+    value: "pending",
   };
   const dataToDelivery = {
-    value: "",
+    value: "pending",
   };
 
-  const moveToShipped = ({ orderId }) => {
+  const moveToShipped = (orderId) => {
     try {
       axios
         .put(`${apiUrl}/delivery/shipped/${orderId}`, dataToShipped, {
@@ -38,7 +38,7 @@ const Orders = ({ orders, getAllOrders }) => {
     }
   };
 
-  const moveToDelivery = ({ orderId }) => {
+  const moveToDelivery = (orderId) => {
     try {
       axios
         .put(`${apiUrl}/delivery/delivered/${orderId}`, dataToDelivery, {
@@ -58,7 +58,7 @@ const Orders = ({ orders, getAllOrders }) => {
       console.log("error in set the order to Delivery ", error);
     }
   };
-  const setOutOfDelivery = () => {
+  const setOutOfDelivery = (orderId) => {
     axios
       .put(`${apiUrl}/delivery/out/${orderId}`, {
         headers: {
@@ -119,15 +119,26 @@ const Orders = ({ orders, getAllOrders }) => {
             </div>
           </div>
           {order.orderStatus === "PREPARED" ? (
-            <button className="absolute top-2 right-2 items-end bg-[#00CED1] p-2 rounded-xl ml-auto text-white ">
+            <button
+              className="absolute top-2 right-2 items-end bg-[#00CED1] p-2 rounded-xl ml-auto text-white "
+              onClick={() => {
+                moveToShipped(order.orderId);
+              }}
+            >
               Move to Shipped
             </button>
           ) : order.orderStatus === "SHIPPED" ? (
-            <button className="absolute top-2 right-2 items-end bg-[#32CD32] p-2 rounded-xl ml-auto text-white ">
+            <button
+              className="absolute top-2 right-2 items-end bg-[#32CD32] p-2 rounded-xl ml-auto text-white "
+              onClick={() => moveToDelivery(order.orderId)}
+            >
               Move to Delivery
             </button>
           ) : (
-            <button className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white ">
+            <button
+              className="absolute top-2 right-2 items-end bg-blue-500 p-2 rounded-xl ml-auto text-white "
+              onClick={() => setOutOfDelivery(order.orderId)}
+            >
               Out for Delivery
             </button>
           )}
